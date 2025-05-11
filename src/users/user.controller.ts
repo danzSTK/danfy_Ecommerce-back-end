@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -34,27 +35,28 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @RequestUserId() sub: number) {
-    return this.userService.findOne(+id, sub);
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @RequestUserId() requestUserId: number,
+  ) {
+    return this.userService.findOne(id, requestUserId);
   }
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
-    @RequestUserId() sub: number,
+    @RequestUserId() requestUserId: number,
   ) {
-    return this.userService.update(+id, updateUserDto, sub);
+    return this.userService.update(id, updateUserDto, requestUserId);
   }
 
   @Delete(':id')
-  // TODO: adicionar o class transform pipe para transformar o id em number e evitar esse tipo de conversão magica
-  // @UsePipes(new ParseIntPipe())
   remove(
-    @Param('id') id: string,
-    @RequestUserId() sub: number,
+    @Param('id', ParseIntPipe) id: number,
+    @RequestUserId() requestUserId: number,
     @UserRequest() user: User,
   ) {
-    return this.userService.remove(+id, sub, user);
+    return this.userService.desactiveUser(id, user);
   }
 }

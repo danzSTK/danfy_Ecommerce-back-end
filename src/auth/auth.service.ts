@@ -54,9 +54,8 @@ export class AuthService {
     payload?: T,
   ) {
     if (!secret) {
-      // TODO: Corrigir texto
       throw new Error(
-        'A secret não está sendo informada, verificar variaveis de ambiente',
+        'A secret não está sendo informada, verifique as informações enviadas nas variaveis de ambiente',
       );
     }
 
@@ -114,9 +113,8 @@ export class AuthService {
 
       return this.genereteTokens(user);
     } catch (error) {
-      // TODO: DEPOIS EU CORRIJO ESSA BOSTA
       console.log(error);
-      throw new UnauthorizedException('Sei lá');
+      throw new UnauthorizedException('Refresh token inválido');
     }
   }
 

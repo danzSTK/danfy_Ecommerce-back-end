@@ -72,9 +72,13 @@ export class UserService {
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto, sub: number) {
-    if (id !== sub) {
-      console.log(sub);
+  async update(
+    id: number,
+    updateUserDto: UpdateUserDto,
+    requestUserId: number,
+  ) {
+    if (id !== requestUserId) {
+      console.log(requestUserId);
       throw new UnauthorizedException('Você não pode acessar esse usuário');
     }
 
@@ -100,18 +104,16 @@ export class UserService {
     return { message: 'Usuário atualizado com sucesso!' };
   }
 
-  // TODO: Adicionar campo de status para o usuário pois o usuario não pode ser deletado e sim desativado fazendo um soft delete
-  // TODO: Melhorar verificação de usuário pois somente o proprio usuario ou um admin pode deletar o usuário
-  async remove(id: number, requestUserId: number, userRequest: User) {
-    if (userRequest.role !== Role.ADMIN) {
-      if (id !== requestUserId) {
-        throw new UnauthorizedException('Você não pode acessar esse usuário');
-      }
+  async desactiveUser(id: number, userRequest: User) {
+    const isAdmin = userRequest.role === Role.ADMIN;
+
+    if (!isAdmin && id !== userRequest.id) {
+      throw new UnauthorizedException('Você não pode acessar esse usuário');
     }
 
-    const user = await this.getUserById(id);
+    const userToDeactivate = await this.getUserById(id);
 
-    if (!user) {
+    if (!userToDeactivate) {
       throw new NotFoundException(`User not found`);
     }
 
