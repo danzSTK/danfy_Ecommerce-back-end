@@ -11,13 +11,18 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from 'src/common/decorators/is-public.decorator';
-import { SubToken } from 'src/common/decorators/user.decorator';
+import {
+  RequestUserId,
+  UserRequest,
+} from 'src/common/decorators/user.decorator';
+import { User } from './entities/user.entity';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @Public()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
@@ -29,7 +34,7 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @SubToken() sub: number) {
+  findOne(@Param('id') id: string, @RequestUserId() sub: number) {
     return this.userService.findOne(+id, sub);
   }
 
@@ -37,7 +42,7 @@ export class UserController {
   update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-    @SubToken() sub: number,
+    @RequestUserId() sub: number,
   ) {
     return this.userService.update(+id, updateUserDto, sub);
   }
@@ -45,7 +50,11 @@ export class UserController {
   @Delete(':id')
   // TODO: adicionar o class transform pipe para transformar o id em number e evitar esse tipo de conversão magica
   // @UsePipes(new ParseIntPipe())
-  remove(@Param('id') id: string, @SubToken() sub: number) {
-    return this.userService.remove(+id, sub);
+  remove(
+    @Param('id') id: string,
+    @RequestUserId() sub: number,
+    @UserRequest() user: User,
+  ) {
+    return this.userService.remove(+id, sub, user);
   }
 }

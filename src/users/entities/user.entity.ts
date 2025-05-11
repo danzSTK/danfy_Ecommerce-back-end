@@ -1,3 +1,4 @@
+import { Role, Status } from 'src/common/interfaces/enums';
 import {
   Column,
   CreateDateColumn,
@@ -26,6 +27,12 @@ export class User {
 
   @Column({ name: 'password_hash' })
   passwordHash: string;
+
+  @Column({ enum: Role, default: Role.USER, type: 'enum' })
+  role: Role;
+
+  @Column({ enum: Status, default: Status.ACTIVE, type: 'enum' })
+  status: Status;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

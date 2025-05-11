@@ -10,17 +10,17 @@ export interface UserRequest {
   iss: string;
 }
 
-export const User = createParamDecorator(
+export const UserRequest = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<Request>();
     return request.user;
   },
 );
 
-export const SubToken = createParamDecorator(
+export const RequestUserId = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<Request>();
-    return request.sub;
+    return request.requestUserId;
   },
 );
 

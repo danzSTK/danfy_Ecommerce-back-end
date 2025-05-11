@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { TokenPayloadDto } from './dto/token-payload.dto';
 import { Cache } from 'cache-manager';
+import { Status } from 'src/common/interfaces/enums';
 
 @Injectable()
 export class AuthService {
@@ -30,6 +31,10 @@ export class AuthService {
       throw new UnauthorizedException('Email ou senha inválidos');
     }
 
+    if (user.status !== Status.ACTIVE) {
+      throw new UnauthorizedException('Email ou senha inválidos');
+    }
+
     const isPasswordMatch = await this.hashingService.compare(
       loginDto.password,
       user.passwordHash,
@@ -40,28 +45,6 @@ export class AuthService {
     }
 
     return this.genereteTokens(user);
-  }
-
-  async refreshToken(refreshToken: RefreshTokenDto) {
-    try {
-      const { sub } = await this.jwtService.verifyAsync<TokenPayloadDto>(
-        refreshToken.refreshToken,
-      );
-
-      const user = await this.userRepository.findOneBy({
-        id: sub,
-      });
-
-      if (!user) {
-        throw new Error('Pessoa não encontrada');
-      }
-
-      return this.genereteTokens(user);
-    } catch (error) {
-      // TODO: DEPOIS EU CORRIJO ESSA BOSTA
-      console.log(error);
-      throw new UnauthorizedException('Sei lá');
-    }
   }
 
   private async singJwtAsync<T>(
@@ -113,6 +96,28 @@ export class AuthService {
       acessToken,
       refreshToken,
     };
+  }
+
+  async refreshToken(refreshToken: RefreshTokenDto) {
+    try {
+      const { sub } = await this.jwtService.verifyAsync<TokenPayloadDto>(
+        refreshToken.refreshToken,
+      );
+
+      const user = await this.userRepository.findOneBy({
+        id: sub,
+      });
+
+      if (!user) {
+        throw new Error('Pessoa não encontrada');
+      }
+
+      return this.genereteTokens(user);
+    } catch (error) {
+      // TODO: DEPOIS EU CORRIJO ESSA BOSTA
+      console.log(error);
+      throw new UnauthorizedException('Sei lá');
+    }
   }
 
   async getUserByEmail(email: string) {

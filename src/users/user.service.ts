@@ -13,6 +13,7 @@ import { QueryFailedError, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HashingServiceProtocol } from 'src/auth/hashing/hashing.service';
 import { Cache } from 'cache-manager';
+import { Role, Status } from 'src/common/interfaces/enums';
 
 @Injectable()
 export class UserService {
@@ -101,10 +102,11 @@ export class UserService {
 
   // TODO: Adicionar campo de status para o usuário pois o usuario não pode ser deletado e sim desativado fazendo um soft delete
   // TODO: Melhorar verificação de usuário pois somente o proprio usuario ou um admin pode deletar o usuário
-  async remove(id: number, sub: number) {
-    if (id !== sub) {
-      console.log(sub);
-      throw new UnauthorizedException('Você não pode acessar esse usuário');
+  async remove(id: number, requestUserId: number, userRequest: User) {
+    if (userRequest.role !== Role.ADMIN) {
+      if (id !== requestUserId) {
+        throw new UnauthorizedException('Você não pode acessar esse usuário');
+      }
     }
 
     const user = await this.getUserById(id);
@@ -113,14 +115,12 @@ export class UserService {
       throw new NotFoundException(`User not found`);
     }
 
-    await this.userRepository.delete(id);
+    await this.userRepository.update(id, { status: Status.INACTIVE });
   }
 
   async getUserByEmail(email: string): Promise<User | null> {
-    console.time('cache');
     const cacheKey = `user:email:${email}`;
     const cacheUser = await this.cacheManager.get<User>(cacheKey);
-    console.timeEnd('cache');
 
     if (cacheUser) {
       console.log('Estou em cache');
@@ -130,9 +130,7 @@ export class UserService {
     // Se não estiver no cache, busque no banco de dados
     // e armazene no cache
     // o resultado por 1 hora
-    console.time('db');
     const user = await this.userRepository.findOneBy({ email });
-    console.timeEnd('db');
 
     if (user) {
       void this.cacheManager.set(cacheKey, user, 1000 * 60 * 60);
