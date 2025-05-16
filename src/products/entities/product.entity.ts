@@ -24,6 +24,9 @@ export class Product {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   basePrice: number;
 
+  @Column()
+  defaultImageUrl: string[];
+
   @Column({ default: true })
   isActive: boolean;
 

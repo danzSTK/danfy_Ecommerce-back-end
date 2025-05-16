@@ -12,10 +12,12 @@ export class ProductVariant {
 
   @Column({ type: 'enum', enum: Size })
   size: Size;
+
+  @Column()
   color: string;
 
   @Column()
-  image: string;
+  imageUrl: string[];
 
   @Column({ type: 'int', default: 0 })
   stock: number;
