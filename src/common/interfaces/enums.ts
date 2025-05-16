@@ -11,3 +11,15 @@ export enum Role {
   USER = 'user',
   MANAGER = 'manager',
 }
+
+export enum ProductStatus {
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+  SUSPENDED = 'suspended',
+}
+
+export enum Size {
+  SMALL = 'sm',
+  MEDIUM = 'md',
+  LARGE = 'lg',
+}
