@@ -8,6 +8,8 @@ import { AuthModule } from 'src/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from 'src/auth/guards/auth/auth.guard';
 import { CacheModule } from '@nestjs/cache-manager';
+import { CategoriesModule } from 'src/categories/categories.module';
+import { ProductsModule } from 'src/products/products.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { CacheModule } from '@nestjs/cache-manager';
     }),
     DatabaseModule,
     UserModule,
+    CategoriesModule,
+    ProductsModule,
     AuthModule,
   ],
   controllers: [AppController],

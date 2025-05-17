@@ -6,10 +6,10 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Product } from './product.entity';
+import { Product } from 'src/products/entities/product.entity';
 
 @Entity('categories')
-export class ProductCategory {
+export class Category {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

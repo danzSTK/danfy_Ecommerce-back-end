@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ProductCategory } from './product-category.entity';
+import { Category } from 'src/categories/entities/category.entity';
 import { ProductVariant } from './product-variant.entity';
 
 @Entity('products')
@@ -24,16 +24,16 @@ export class Product {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   basePrice: number;
 
-  @Column()
+  @Column('text', { array: true })
   defaultImageUrl: string[];
 
   @Column({ default: true })
   isActive: boolean;
 
-  @ManyToMany(() => ProductCategory, (category) => category.products, {
+  @ManyToMany(() => Category, (category) => category.products, {
     eager: true,
   })
-  category: ProductCategory;
+  category: Category;
 
   @OneToMany(() => ProductVariant, (variant) => variant.product, {
     cascade: true,

@@ -1,9 +1,12 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Category } from 'src/categories/entities/category.entity';
+import { ProductVariant } from 'src/products/entities/product-variant.entity';
+import { Product } from 'src/products/entities/product.entity';
 import { User } from 'src/users/entities/user.entity';
 
-const entities = [User];
+const entities = [User, Category, Product, ProductVariant];
 
 @Global()
 @Module({

@@ -16,8 +16,8 @@ export class ProductVariant {
   @Column()
   color: string;
 
-  @Column()
-  imageUrl: string[];
+  @Column('text', { array: true })
+  imageUrl?: string[];
 
   @Column({ type: 'int', default: 0 })
   stock: number;
