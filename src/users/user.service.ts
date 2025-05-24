@@ -14,6 +14,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { HashingServiceProtocol } from 'src/auth/hashing/hashing.service';
 import { Cache } from 'cache-manager';
 import { Role, Status } from 'src/common/interfaces/enums';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UserService {
@@ -23,6 +24,7 @@ export class UserService {
     private readonly hashingService: HashingServiceProtocol,
     @Inject('CACHE_MANAGER')
     private readonly cacheManager: Cache,
+    private configService: ConfigService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {

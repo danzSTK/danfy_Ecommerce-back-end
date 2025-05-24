@@ -19,7 +19,9 @@ export class Category {
   @BeforeInsert()
   @BeforeUpdate()
   normalizeName() {
-    this.name = this.name.toLowerCase().trim();
+    if (this.name) {
+      this.name = this.name.toLowerCase().trim();
+    }
   }
 
   @OneToMany(() => Product, (product) => product.category)

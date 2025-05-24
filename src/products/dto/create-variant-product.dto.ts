@@ -18,13 +18,13 @@ export class CreateVariantProductDto {
   @IsString()
   color: string;
 
-  @IsArray()
+  /*  @IsArray()
   @IsString({ each: true })
-  imageUrl: string[];
+  imageUrl: string[]; */
 
   @IsInt()
   stock: number;
 
   @IsBoolean()
-  isActive?: boolean;
+  isActive: boolean;
 }

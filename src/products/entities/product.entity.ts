@@ -2,7 +2,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
+  Index,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -10,6 +11,7 @@ import {
 import { Category } from 'src/categories/entities/category.entity';
 import { ProductVariant } from './product-variant.entity';
 
+@Index('index_create_at', ['createAt'])
 @Entity('products')
 export class Product {
   @PrimaryGeneratedColumn('uuid')
@@ -24,14 +26,17 @@ export class Product {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   basePrice: number;
 
-  @Column('text', { array: true })
-  defaultImageUrl: string[];
+  @Column()
+  defaultImageUrl: string;
 
   @Column({ default: true })
   isActive: boolean;
 
-  @ManyToMany(() => Category, (category) => category.products, {
-    eager: true,
+  @Column()
+  categoryId: string;
+
+  @ManyToOne(() => Category, (category) => category.products, {
+    //eager: true,
   })
   category: Category;
 

@@ -10,6 +10,7 @@ import { AuthGuard } from 'src/auth/guards/auth/auth.guard';
 import { CacheModule } from '@nestjs/cache-manager';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { ProductsModule } from 'src/products/products.module';
+import { CloudinaryModule } from 'src/common/services/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ProductsModule } from 'src/products/products.module';
     CategoriesModule,
     ProductsModule,
     AuthModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [

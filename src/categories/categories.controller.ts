@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { Public } from 'src/common/decorators/is-public.decorator';
+import { FindCategoryParamsDto } from './dto/find-category-params.dto';
 
 @Controller('categories')
 export class CategoriesController {
@@ -20,8 +21,8 @@ export class CategoriesController {
 
   @Public()
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(id);
+  findOne(@Param() params: FindCategoryParamsDto) {
+    return this.categoriesService.findOne(params.id);
   }
 
   /* @Patch(':id')
@@ -33,7 +34,7 @@ export class CategoriesController {
   } */
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoriesService.remove(id);
+  remove(@Param('id') params: FindCategoryParamsDto) {
+    return this.categoriesService.remove(params.id);
   }
 }

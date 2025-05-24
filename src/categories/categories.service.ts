@@ -51,19 +51,27 @@ export class CategoriesService {
   }
 
   private async getCategoryById(id: string): Promise<Category | null> {
-    const CACHE_KEY = `category:id:${id}`;
+    try {
+      const CACHE_KEY = `category:id:${id}`;
 
-    const cachedCategory = await this.cacheManager.get<Category>(CACHE_KEY);
+      const cachedCategory = await this.cacheManager.get<Category>(CACHE_KEY);
 
-    if (cachedCategory) {
-      return cachedCategory;
+      if (cachedCategory) {
+        console.log('Categoria encontrada no cache');
+        return cachedCategory;
+      }
+
+      const category = await this.categoryRepository.findOneBy({ id });
+
+      if (category) {
+        void this.cacheManager.set(CACHE_KEY, category, 1000 * 60);
+      }
+      console.log('Categoria encontrada no banco de dados');
+      return category;
+    } catch (error) {
+      // TODO: corrigir tratativa de error na busca de categoria por id
+      console.error('Error na busca por categoria', error);
+      return null;
     }
-
-    const category = await this.categoryRepository.findOneBy({ id });
-
-    if (category) {
-      void this.cacheManager.set(CACHE_KEY, category, 1000 * 60);
-    }
-    return cachedCategory;
   }
 }

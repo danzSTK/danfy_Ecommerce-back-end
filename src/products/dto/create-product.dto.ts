@@ -2,8 +2,10 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
+  IsNotEmpty,
   IsNumber,
   IsString,
+  IsUrl,
   IsUUID,
   MaxLength,
   MinLength,
@@ -24,7 +26,7 @@ export class CreateProductDto {
   basePrice: number;
 
   @IsBoolean()
-  isActive?: boolean;
+  isActive: boolean;
 
   @IsUUID()
   categoryId: string;

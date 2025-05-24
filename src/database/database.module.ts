@@ -6,7 +6,7 @@ import { ProductVariant } from 'src/products/entities/product-variant.entity';
 import { Product } from 'src/products/entities/product.entity';
 import { User } from 'src/users/entities/user.entity';
 
-const entities = [User, Category, Product, ProductVariant];
+const entities = [User, Product, Category, ProductVariant];
 
 @Global()
 @Module({

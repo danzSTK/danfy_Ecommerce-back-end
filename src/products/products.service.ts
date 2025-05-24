@@ -3,32 +3,69 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import { Repository } from 'typeorm';
+import { Like, MoreThan, Repository } from 'typeorm';
 import { Cache } from 'cache-manager';
+import { Category } from 'src/categories/entities/category.entity';
+import { CloudinaryService } from 'src/common/services/cloudinary/cloudinary.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
     @Inject('CACHE_MANAGER')
     private readonly cacheManager: Cache,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  create(createProductDto: CreateProductDto) {
-    const newVariantDate = createProductDto.variants;
-    const newProduct = this.productRepository.create({
-      ...createProductDto,
-      variants: newVariantDate,
+  async create(createProductDto: CreateProductDto, file: Express.Multer.File) {
+    let defaultImageUrl = '';
+
+    if (file) {
+      const { secure_url } = await this.cloudinaryService.uploadImage(file, {
+        folder: 'products',
+      });
+      defaultImageUrl = secure_url;
+    }
+    const { categoryId, ...data } = createProductDto;
+    const category = await this.categoryRepository.findOneBy({
+      id: categoryId,
     });
 
+    if (!category) {
+      throw new NotFoundException('Categoria não encontrada');
+    }
+
+    const newProduct = this.productRepository.create({
+      ...data,
+      defaultImageUrl,
+      category,
+    });
     const product = this.productRepository.save(newProduct);
 
     return product;
   }
 
   findAll() {
-    return this.productRepository.find();
+    const take = 10;
+    const page = 1;
+    return this.productRepository.find({
+      where: {
+        variants: {
+          price: MoreThan(30),
+        },
+      },
+      relations: {
+        category: true,
+      },
+      take: take,
+      skip: (page - 1) * take,
+      order: {
+        createAt: 'desc',
+      },
+    });
   }
 
   async findOne(id: string) {
