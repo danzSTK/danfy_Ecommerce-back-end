@@ -11,6 +11,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { ProductsModule } from 'src/products/products.module';
 import { CloudinaryModule } from 'src/common/services/cloudinary/cloudinary.module';
+import { UploadModule } from 'src/upload/upload.module';
 
 @Module({
   imports: [
@@ -22,11 +23,12 @@ import { CloudinaryModule } from 'src/common/services/cloudinary/cloudinary.modu
       ttl: 1000 * 60 * 60, // seconds
     }),
     DatabaseModule,
+    AuthModule,
     UserModule,
     CategoriesModule,
     ProductsModule,
-    AuthModule,
     CloudinaryModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [

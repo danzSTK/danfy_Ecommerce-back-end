@@ -29,6 +29,7 @@ export class ProductsService {
       });
       defaultImageUrl = secure_url;
     }
+
     const { categoryId, ...data } = createProductDto;
     const category = await this.categoryRepository.findOneBy({
       id: categoryId,
@@ -43,7 +44,7 @@ export class ProductsService {
       defaultImageUrl,
       category,
     });
-    const product = this.productRepository.save(newProduct);
+    const product = await this.productRepository.save(newProduct);
 
     return product;
   }
@@ -52,11 +53,7 @@ export class ProductsService {
     const take = 10;
     const page = 1;
     return this.productRepository.find({
-      where: {
-        variants: {
-          price: MoreThan(30),
-        },
-      },
+      where: {},
       relations: {
         category: true,
       },

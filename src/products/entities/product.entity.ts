@@ -40,11 +40,11 @@ export class Product {
   })
   category: Category;
 
-  @OneToMany(() => ProductVariant, (variant) => variant.product, {
+/*   @OneToMany(() => ProductVariant, (variant) => variant.product, {
     cascade: true,
     eager: true,
   })
-  variants: ProductVariant[];
+  variants: ProductVariant[]; */
 
   @CreateDateColumn()
   createAt: Date;

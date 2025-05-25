@@ -25,11 +25,11 @@ export class ProductVariant {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column()
-  productId: string;
+/*   @Column()
+  productId: string; */
 
-  @ManyToOne(() => Product, (product) => product.variants, {
+/*   @ManyToOne(() => Product, (product) => product.variants, {
     onDelete: 'CASCADE',
   })
-  product: Product;
+  product: Product; */
 }

@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -31,8 +31,8 @@ export class CreateProductDto {
   @IsUUID()
   categoryId: string;
 
-  @IsArray()
+  /*  @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateVariantProductDto)
-  variants: CreateVariantProductDto[];
+  variants: CreateVariantProductDto[]; */
 }
