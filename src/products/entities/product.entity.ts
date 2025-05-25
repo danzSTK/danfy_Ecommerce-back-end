@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Category } from 'src/categories/entities/category.entity';
-import { ProductVariant } from './product-variant.entity';
+import { ProductVariant } from 'src/variants/entities/variant.entity';
 
 @Index('index_create_at', ['createAt'])
 @Entity('products')
@@ -26,6 +26,9 @@ export class Product {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   basePrice: number;
 
+  @Column({ default: '' })
+  imagePublicId: string;
+
   @Column()
   defaultImageUrl: string;
 
@@ -40,11 +43,11 @@ export class Product {
   })
   category: Category;
 
-/*   @OneToMany(() => ProductVariant, (variant) => variant.product, {
+  @OneToMany(() => ProductVariant, (variant) => variant.product, {
     cascade: true,
     eager: true,
   })
-  variants: ProductVariant[]; */
+  variants: ProductVariant[];
 
   @CreateDateColumn()
   createAt: Date;

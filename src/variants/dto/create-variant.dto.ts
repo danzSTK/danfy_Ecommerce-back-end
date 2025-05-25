@@ -1,11 +1,12 @@
 import {
-  IsArray,
   IsBoolean,
   IsEnum,
   IsInt,
   IsNumber,
+  IsOptional,
   IsString,
 } from 'class-validator';
+import { isCloudinaryUrl } from 'src/common/decorators/is-cloudinary-url.decorator';
 import { Size } from 'src/common/interfaces/enums';
 
 export class CreateVariantProductDto {
@@ -18,9 +19,12 @@ export class CreateVariantProductDto {
   @IsString()
   color: string;
 
-  /*  @IsArray()
-  @IsString({ each: true })
-  imageUrl: string[]; */
+  @IsOptional()
+  @IsString()
+  @isCloudinaryUrl({
+    message: 'A imagem precisa ser uma URL válida do Cloudinary.',
+  })
+  imageUrl?: string;
 
   @IsInt()
   stock: number;

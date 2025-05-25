@@ -1,8 +1,9 @@
 import { Size } from 'src/common/interfaces/enums';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Product } from './product.entity';
+import { Product } from '../../products/entities/product.entity';
+import { randomUUID } from 'crypto';
 
-@Entity('ProductVariant')
+@Entity('ProductVariants')
 export class ProductVariant {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -16,8 +17,8 @@ export class ProductVariant {
   @Column()
   color: string;
 
-  @Column('text', { array: true })
-  imageUrl?: string[];
+  @Column({ type: 'text' })
+  imageUrl?: string;
 
   @Column({ type: 'int', default: 0 })
   stock: number;
@@ -25,11 +26,11 @@ export class ProductVariant {
   @Column({ default: true })
   isActive: boolean;
 
-/*   @Column()
-  productId: string; */
+  @Column({ default: randomUUID() })
+  productId: string;
 
-/*   @ManyToOne(() => Product, (product) => product.variants, {
+  @ManyToOne(() => Product, (product) => product.variants, {
     onDelete: 'CASCADE',
   })
-  product: Product; */
+  product: Product;
 }

@@ -1,17 +1,13 @@
-import { Transform, Type } from 'class-transformer';
 import {
-  IsArray,
   IsBoolean,
-  IsNotEmpty,
   IsNumber,
   IsString,
   IsUrl,
   IsUUID,
   MaxLength,
   MinLength,
-  ValidateNested,
 } from 'class-validator';
-import { CreateVariantProductDto } from './create-variant-product.dto';
+import { isCloudinaryUrl } from 'src/common/decorators/is-cloudinary-url.decorator';
 
 export class CreateProductDto {
   @IsString()
@@ -31,8 +27,13 @@ export class CreateProductDto {
   @IsUUID()
   categoryId: string;
 
-  /*  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => CreateVariantProductDto)
-  variants: CreateVariantProductDto[]; */
+  @IsString()
+  @IsUrl()
+  @isCloudinaryUrl({
+    message: 'A imagem precisa ser uma URL válida do Cloudinary.',
+  })
+  defaultImageUrl: string;
+
+  @IsString()
+  imagePublicId: string;
 }

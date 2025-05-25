@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -20,16 +21,7 @@ export class ProductsService {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  async create(createProductDto: CreateProductDto, file: Express.Multer.File) {
-    let defaultImageUrl = '';
-
-    if (file) {
-      const { secure_url } = await this.cloudinaryService.uploadImage(file, {
-        folder: 'products',
-      });
-      defaultImageUrl = secure_url;
-    }
-
+  async create(createProductDto: CreateProductDto) {
     const { categoryId, ...data } = createProductDto;
     const category = await this.categoryRepository.findOneBy({
       id: categoryId,
@@ -41,9 +33,9 @@ export class ProductsService {
 
     const newProduct = this.productRepository.create({
       ...data,
-      defaultImageUrl,
       category,
     });
+
     const product = await this.productRepository.save(newProduct);
 
     return product;

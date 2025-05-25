@@ -12,6 +12,7 @@ import { CategoriesModule } from 'src/categories/categories.module';
 import { ProductsModule } from 'src/products/products.module';
 import { CloudinaryModule } from 'src/common/services/cloudinary/cloudinary.module';
 import { UploadModule } from 'src/upload/upload.module';
+import { VariantsModule } from 'src/variants/variants.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UploadModule } from 'src/upload/upload.module';
     UserModule,
     CategoriesModule,
     ProductsModule,
+    VariantsModule,
     CloudinaryModule,
     UploadModule,
   ],
