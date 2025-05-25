@@ -28,18 +28,22 @@ export class VariantsController {
     return this.variantsService.findAll();
   }
 
-  @Get(':id')
+  @Get('/variants/:id')
   findOne(@Param('id') id: string) {
     return this.variantsService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVariantDto: UpdateVariantDto) {
-    return this.variantsService.update(+id, updateVariantDto);
+  @Patch('/variants/:id')
+  update(
+    @Param('productId') productId: string,
+    @Param('id') id: string,
+    @Body() updateVariantDto: UpdateVariantDto,
+  ) {
+    return this.variantsService.update(productId, id, updateVariantDto);
   }
 
-  @Delete(':id')
+  @Delete('/variants/:id')
   remove(@Param('id') id: string) {
-    return this.variantsService.remove(+id);
+    return this.variantsService.remove(id);
   }
 }

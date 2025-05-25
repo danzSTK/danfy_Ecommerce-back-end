@@ -35,11 +35,33 @@ export class VariantsService {
     return `This action returns a #${id} variant`;
   }
 
-  update(id: number, updateVariantDto: UpdateVariantDto) {
-    return `This action updates a #${id} variant`;
+  async update(
+    productId: string,
+    id: string,
+    updateVariantDto: UpdateVariantDto,
+  ) {
+    const variant = await this.variantsRepository.findOneBy({
+      id,
+    });
+
+    if (!variant) {
+      throw new NotFoundException('Não foi possível encontrar a variante');
+    }
+
+    Object.assign(variant, updateVariantDto);
+
+    return this.variantsRepository.save(variant);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} variant`;
+  async remove(id: string) {
+    const variant = await this.variantsRepository.findOneBy({
+      id,
+    });
+
+    if (!variant) {
+      throw new NotFoundException('Não foi possível encontrar a variante');
+    }
+
+    return this.variantsRepository.remove(variant);
   }
 }
