@@ -8,6 +8,8 @@ import { FindCategoryParamsDto } from './dto/find-category-params.dto';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
+  //TODO: Retirar decorator public após testes
+  @Public()
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);

@@ -3,6 +3,8 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -24,6 +26,15 @@ export class Category {
     }
   }
 
-  @OneToMany(() => Product, (product) => product.category)
+  @ManyToMany(() => Product, (product) => product.categories)
   products: Product[];
+
+  // categoria pai
+  @ManyToOne(() => Category, (category) => category.children, {
+    nullable: true,
+  })
+  parent?: Category;
+
+  @OneToMany(() => Category, (category) => category.parent)
+  children: Category[];
 }
