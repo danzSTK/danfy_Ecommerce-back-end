@@ -3,7 +3,8 @@ import {
   CreateDateColumn,
   Entity,
   Index,
-  ManyToOne,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -35,13 +36,11 @@ export class Product {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column()
-  categoryId: string;
-
-  @ManyToOne(() => Category, (category) => category.products, {
+  @ManyToMany(() => Category, (categories) => categories.products, {
     //eager: true,
   })
-  category: Category;
+  @JoinTable()
+  categories: Category[];
 
   @OneToMany(() => ProductVariant, (variant) => variant.product, {
     cascade: true,

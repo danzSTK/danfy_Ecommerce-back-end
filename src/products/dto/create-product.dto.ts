@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsBoolean,
   IsNumber,
   IsString,
@@ -24,8 +25,9 @@ export class CreateProductDto {
   @IsBoolean()
   isActive: boolean;
 
-  @IsUUID()
-  categoryId: string;
+  @IsArray()
+  @IsUUID('all', { each: true })
+  categoriesId: string[];
 
   @IsString()
   @IsUrl()

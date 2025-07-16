@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -24,13 +25,20 @@ export class ProductsController {
 
   @Public()
   @Get()
-  findAll() {
-    return this.productsService.findAll();
+  //TODO: corrigir e tipar entrada de dados atraves da Query no metodo findAll
+  findAll(@Query() data: any) {
+    return this.productsService.findAll(data);
   }
 
   @Get(':id')
   findOne(@Param() params: FindProductParamsDto) {
     return this.productsService.findOne(params.id);
+  }
+
+  @Public()
+  @Get('category/:categoryId')
+  async getByCategory(@Param('categoryId') id: string) {
+    return this.productsService.getProductByCategory(id);
   }
 
   @Patch(':id')

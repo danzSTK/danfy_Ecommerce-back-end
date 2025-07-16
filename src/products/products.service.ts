@@ -4,7 +4,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import { Like, MoreThan, Repository } from 'typeorm';
+import { In, Like, MoreThan, Repository } from 'typeorm';
 import { Cache } from 'cache-manager';
 import { Category } from 'src/categories/entities/category.entity';
 import { CloudinaryService } from 'src/common/services/cloudinary/cloudinary.service';
@@ -21,19 +21,43 @@ export class ProductsService {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  async create(createProductDto: CreateProductDto) {
-    const { categoryId, ...data } = createProductDto;
-    const category = await this.categoryRepository.findOneBy({
-      id: categoryId,
-    });
+  recusiveCategoryTree(categoriesId: string[]) {
+    return this.categoryRepository.query(
+      `
+      with recursive category_tree as (
+        select * from categories c where id = any(array[
+          $1
+        ]::uuid[])
+        union
+        select c2.* from categories c2
+        inner join category_tree ct on ct."parentId" = c2.id
+      )
+      select id from category_tree 
+      `,
+      categoriesId,
+    ) as unknown as Promise<Array<{ id: string }>>;
+  }
 
-    if (!category) {
-      throw new NotFoundException('Categoria não encontrada');
+  async create(createProductDto: CreateProductDto) {
+    const { categoriesId, ...data } = createProductDto;
+
+    const associatesId = await this.recusiveCategoryTree(categoriesId);
+    /* const categories = await this.categoryRepository.find({
+      where: { id: In(categoriesId) },
+      relations: {
+        parent: true,
+      },
+    }); */
+
+    if (associatesId.length === 0) {
+      throw new NotFoundException(
+        'Um produto deve ter pelo menos uma categoria valida',
+      );
     }
 
     const newProduct = this.productRepository.create({
       ...data,
-      category,
+      categories: associatesId,
     });
 
     const product = await this.productRepository.save(newProduct);
@@ -41,13 +65,21 @@ export class ProductsService {
     return product;
   }
 
-  findAll() {
+  async findAll({ categoryId }: { categoryId: string }) {
     const take = 10;
     const page = 1;
     return this.productRepository.find({
-      where: {},
+      where: {
+        ...(categoryId
+          ? {
+              categories: {
+                id: categoryId,
+              },
+            }
+          : []),
+      },
       relations: {
-        category: true,
+        categories: true,
       },
       take: take,
       skip: (page - 1) * take,
@@ -65,6 +97,17 @@ export class ProductsService {
     }
 
     return product;
+  }
+
+  getProductByCategory(categoryId: string) {
+    return this.productRepository.find({
+      where: {
+        categories: {
+          id: categoryId,
+        },
+      },
+      relations: ['category', 'category.parent'],
+    });
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
